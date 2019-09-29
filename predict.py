@@ -47,11 +47,12 @@ if __name__ == "__main__":
     with torch.no_grad():
         pred_confidence,pred_bbox = net(img)
         #print(pred_confidence)
+        pred_bbox = center_form_to_corner_form(pred_bbox)
         output = post_process(pred_confidence,pred_bbox, width=width, height=height)[0]
         
         boxes, labels, scores = [o.to("cpu").numpy() for o in output]
         print(scores)
-        boxes = center_form_to_corner_form(boxes)
+        
         drawn_image = draw_bounding_boxes(image, boxes, labels, scores, ("__background__","basketball","volleyball")).astype(np.uint8)
         
         Image.fromarray(drawn_image).save("./a.jpg")
